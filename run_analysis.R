@@ -1,4 +1,4 @@
-##library(plyr) 
+library(plyr) 
 
 ## Part 1 - Load the file and unzip it
 
@@ -16,7 +16,7 @@ dateDownloaded_zip<- date()
 unzip("./data/datazip.zip")
 
 
-## put the files into corresponding tables
+## Part 2 - convert the files into corresponding tables
 
 
 activityLabels <- read.table("UCI HAR Dataset/activity_labels.txt")
@@ -30,7 +30,7 @@ x_test <- read.table("UCI HAR Dataset/test/X_test.txt")
 y_test <- read.table("UCI HAR Dataset/test/y_test.txt")
 subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt")
 
-## merge the files
+##  Part 3 - merge the files
 
 x_combined <- rbind(x_train, x_test)
 y_combined <- rbind(y_train, y_test)
@@ -38,7 +38,8 @@ subject_combined <- rbind(subject_train, subject_test)
 
 
 
-## extract mean and standard deviation
+## Part 4 - extract mean and standard deviation from combined x data and 
+## create subset
 
 # find and subset columns
 mean_and_std <- grep("-(mean|std)\\(\\)", features[, 2])
@@ -48,14 +49,14 @@ x_combined_sub <- x_combined[, mean_and_std]
 names(x_combined_sub) <- features[mean_and_std, 2]
 
 
-## label activities and add column names
+## Part 5 - label activities and add column names
 
 y_combined[, 1] <- activityLabels[y_combined[, 1], 2]
 
 names(y_combined) <- "activity"
 names(subject_combined) <- "subject"
 
-## cbind all the data in a single data set
+## Part 6 - cbind all the data in a single data set
 final <- cbind(x_combined_sub, y_combined, subject_combined)
 
 ## create a second, independent tidy data set with the average of each 
