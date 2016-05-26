@@ -1,6 +1,6 @@
 ##library(plyr) 
 
-## Load the file and unzip it
+## Part 1 - Load the file and unzip it
 
 fileurl = 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
 
@@ -48,13 +48,19 @@ x_combined_sub <- x_combined[, mean_and_std]
 names(x_combined_sub) <- features[mean_and_std, 2]
 
 
-## label activities and add column name
+## label activities and add column names
 
 y_combined[, 1] <- activityLabels[y_combined[, 1], 2]
 
 names(y_combined) <- "activity"
+names(subject_combined) <- "subject"
+
+## cbind all the data in a single data set
+final <- cbind(x_combined_sub, y_combined, subject_combined)
 
 ## create a second, independent tidy data set with the average of each 
 ## variable for each activity and each subject.
 
+avg_final <- ddply(final, .(subject, activity), function(x) colMeans(x[, 1:66]))
 
+write.table(avg_final, "avg_final.txt", row.name=FALSE)
