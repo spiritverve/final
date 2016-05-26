@@ -21,37 +21,36 @@ For each record in the dataset it is provided:
 
 
 ### Part 1 
-Loads the file and unzips it
+- Loads the file and unzips it
 
 
 ### Part 2 
-Converts the files into corresponding tables
+- Converts the files into corresponding tables
 
 
 ### Part 3 
-Merges the x,y and subject tables using rbind
+- Merges the x,y and subject tables using rbind
 
 
 ### Part 4 
-Extracts mean and standard deviation from combined x data 
-Create subset of the x containing only those columns with mean and standard deviation 
-Label the mean and standard deviation columns
+- Extracts mean and standard deviation from combined x data 
+- Create subset of the x containing only those columns with mean and standard deviation 
+- Label the mean and standard deviation columns
 
 
 ### Part 5 
-Label activities 
-Add column names for the y table and the subject column
+- Label activities 
+- Add column names for the y table and the subject column
 
 
 ### Part 6 
-Create a single data set combining the mean and standard deviation table with the subjects and activities
+- Create a single data set combining the mean and standard deviation table with the subjects and activities
 
 ### Part 7 
-Create a second, independent tidy data set with the average of each variable for each activity and each subject.
-Write that table to a text file.
+- Create a second, independent tidy data set with the average of each variable for each activity and each subject.
+- Change the order of the columns
+- Write that table to a text file.
 
-avg_final <- ddply(final, .(subject, activity), function(x) colMeans(x[, 1:66]))
-write.table(avg_final, "avg_final.txt", row.name=FALSE)
 
-### As a final step I bring the output back into a table just to make sure it looks like I want it to. :)
+As a final step I bring the output back into a table just to make sure it looks like I want it to. :)
 
