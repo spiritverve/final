@@ -20,30 +20,48 @@ For each record in the dataset it is provided:
 - An identifier of the subject who carried out the experiment.
 
 
+### Part 1 - Loads the file and unzip it
 
 
-### Section 1. Merge the training and the test sets to create one data set.
-After setting the source directory for the files, read into tables the data located in
-- features.txt
-- activity_labels.txt
-- subject_train.txt
-- x_train.txt
-- y_train.txt
-- subject_test.txt
-- x_test.txt
-- y_test.txt
+### Part 2 - Convert the files into corresponding tables
 
-Assign column names and merge to create one data set.
+activityLabels <- read.table("UCI HAR Dataset/activity_labels.txt")
+features <- read.table("UCI HAR Dataset/features.txt")
+x_train <- read.table("UCI HAR Dataset/train/X_train.txt")
+y_train <- read.table("UCI HAR Dataset/train/y_train.txt")
+subject_train <- read.table("UCI HAR Dataset/train/subject_train.txt")
+x_test <- read.table("UCI HAR Dataset/test/X_test.txt")
+y_test <- read.table("UCI HAR Dataset/test/y_test.txt")
+subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt")
 
-## Section 2. Extract only the measurements on the mean and standard deviation for each measurement. 
-Create a logcal vector that contains TRUE values for the ID, mean and stdev columns and FALSE values for the others.
-Subset this data to keep only the necessary columns.
+##  Part 3 - merge the files
 
-## Section 3. Use descriptive activity names to name the activities in the data set
-Merge data subset with the activityType table to cinlude the descriptive activity names
+x_combined <- rbind(x_train, x_test)
+y_combined <- rbind(y_train, y_test)
+subject_combined <- rbind(subject_train, subject_test)
 
-## Section 4. Appropriately label the data set with descriptive activity names.
-Use gsub function for pattern replacement to clean up the data labels.
+## Part 4 - extract mean and standard deviation from combined x data  
+## create subset containing only those columns and label correctly
 
-## Section 5. Create a second, independent tidy data set with the average of each variable for each activity and each subject. 
-Per the project instructions, we need to produce only a data set with the average of each veriable for each activity and subject
+mean_and_std <- grep("-(mean|std)\\(\\)", features[, 2])
+x_combined_sub <- x_combined[, mean_and_std]
+names(x_combined_sub) <- features[mean_and_std, 2]
+
+## Part 5 - label activities and add column names
+
+y_combined[, 1] <- activityLabels[y_combined[, 1], 2]
+names(y_combined) <- "activity"
+names(subject_combined) <- "subject"
+
+## Part 6 - cbind all the data in a single data set
+final <- cbind(x_combined_sub, y_combined, subject_combined)
+
+## Part 7 - create a second, independent tidy data set with the average of each 
+## variable for each activity and each subject.
+
+avg_final <- ddply(final, .(subject, activity), function(x) colMeans(x[, 1:66]))
+write.table(avg_final, "avg_final.txt", row.name=FALSE)
+
+## bring the output back into a table just to make sure :)
+
+x_final <- read.table("avg_final.txt")
